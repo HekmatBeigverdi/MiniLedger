@@ -52,3 +52,17 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+
+# macOS
+.DS_Store
+
+# Rider / JetBrains
+.idea/
+
+# .NET build output
+bin/
+obj/
+
+# OS / archive junk
+__MACOSX/
