@@ -38,6 +38,9 @@ builder.Services.AddDbContext<MiniLedgerDbContext>(dbContextOptions =>
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+builder.Services.AddScoped<IPartyRepository, PartyRepository>();
+builder.Services.AddScoped<IPartyService, PartyService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

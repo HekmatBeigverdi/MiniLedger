@@ -13,6 +13,7 @@ public class MiniLedgerDbContext : DbContext
     public DbSet<Party> Parties => Set<Party>();
     public DbSet<JournalEntry> JournalEntries => Set<JournalEntry>();
     public DbSet<JournalEntryLine> JournalEntryLines => Set<JournalEntryLine>();
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -46,7 +46,7 @@ namespace MiniLedger.Api.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("MiniLedger.Api.Models.JournalEntry", b =>
@@ -72,7 +72,7 @@ namespace MiniLedger.Api.Migrations
                     b.HasIndex("EntryNumber")
                         .IsUnique();
 
-                    b.ToTable("JournalEntries");
+                    b.ToTable("JournalEntries", (string)null);
                 });
 
             modelBuilder.Entity("MiniLedger.Api.Models.JournalEntryLine", b =>
@@ -108,7 +108,7 @@ namespace MiniLedger.Api.Migrations
 
                     b.HasIndex("PartyId");
 
-                    b.ToTable("JournalEntryLines");
+                    b.ToTable("JournalEntryLines", (string)null);
                 });
 
             modelBuilder.Entity("MiniLedger.Api.Models.Party", b =>
@@ -131,7 +131,7 @@ namespace MiniLedger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Parties");
+                    b.ToTable("Parties", (string)null);
                 });
 
             modelBuilder.Entity("MiniLedger.Api.Models.JournalEntryLine", b =>
