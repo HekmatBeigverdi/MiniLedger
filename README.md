@@ -1,6 +1,6 @@
 # MiniLedger
 
-![MiniLedger Banner](docs/assets/banners/miniledger_banner.png)
+![MiniLedger Banner](docs/assets/banners/miniledger-banner.png)
 
 MiniLedger is an educational ASP.NET Core Web API project inspired by real accounting systems.
 
