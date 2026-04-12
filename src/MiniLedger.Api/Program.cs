@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using MiniLedger.Api.Data;
+using MiniLedger.Api.Repositories.Implementations;
+using MiniLedger.Api.Repositories.Interfaces;
+using MiniLedger.Api.Services.Implementations;
+using MiniLedger.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,9 @@ builder.Services.AddDbContext<MiniLedgerDbContext>(dbContextOptions =>
     }
 
 });
+
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
