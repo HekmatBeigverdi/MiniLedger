@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MiniLedger.Api.Data;
+using MiniLedger.Api.Middleware;
 using MiniLedger.Api.Repositories.Implementations;
 using MiniLedger.Api.Repositories.Interfaces;
 using MiniLedger.Api.Services.Implementations;
@@ -13,26 +14,24 @@ builder.Services.AddSwaggerGen();
 
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'Default' is not configured.");
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 32));
 
-builder.Services.AddDbContext<MiniLedgerDbContext>(dbContextOptions =>
+builder.Services.AddDbContext<MiniLedgerDbContext>(options =>
 {
-    dbContextOptions.UseMySql(connectionString, serverVersion, mysqlOptions =>
+    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
     {
-        mysqlOptions.EnableRetryOnFailure();
-        // mysqlOptions.CommandTimeout(60);
+        mySqlOptions.EnableRetryOnFailure();
     });
 
     if (builder.Environment.IsDevelopment())
     {
-        dbContextOptions
+        options
             .LogTo(Console.WriteLine, LogLevel.Information)
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors();
     }
-
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -41,7 +40,12 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPartyRepository, PartyRepository>();
 builder.Services.AddScoped<IPartyService, PartyService>();
 
+builder.Services.AddScoped<IJournalEntryService, JournalEntryService>();
+
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestTimingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
