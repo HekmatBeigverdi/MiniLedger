@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MiniLedger.Api.Common.Responses;
 using MiniLedger.Api.DTOs.Accounts;
 using MiniLedger.Api.Services.Interfaces;
 
@@ -16,9 +17,9 @@ public class AccountsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<AccountDto>>> GetAll()
+    public async Task<ActionResult<PagedResponse<List<AccountDto>>>> GetAll([FromQuery] AccountQueryDto query)
     {
-        var result = await _accountService.GetAllAsync();
+        var result = await _accountService.GetAllAsync(query);
         return Ok(result);
     }
 
