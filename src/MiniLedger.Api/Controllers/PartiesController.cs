@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MiniLedger.Api.Common.Responses;
 using MiniLedger.Api.DTOs.Parties;
 using MiniLedger.Api.Services.Interfaces;
 
@@ -16,9 +17,9 @@ public class PartiesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<PartyDto>>> GetAll()
+    public async Task<ActionResult<PagedResponse<List<PartyDto>>>> GetAll([FromQuery] PartyQueryDto query)
     {
-        var result = await _partyService.GetAllAsync();
+        var result = await _partyService.GetAllAsync(query);
         return Ok(result);
     }
 
