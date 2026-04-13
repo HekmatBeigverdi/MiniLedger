@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MiniLedger.Api.Common.Responses;
 using MiniLedger.Api.DTOs.JournalEntries;
 using MiniLedger.Api.Services.Interfaces;
 
@@ -16,9 +17,9 @@ public class JournalEntriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<JournalEntryDto>>> GetAll()
+    public async Task<ActionResult<PagedResponse<List<JournalEntryListItemDto>>>> GetAll([FromQuery] JournalEntryQueryDto query)
     {
-        var result = await _journalEntryService.GetAllAsync();
+        var result = await _journalEntryService.GetAllAsync(query);
         return Ok(result);
     }
 

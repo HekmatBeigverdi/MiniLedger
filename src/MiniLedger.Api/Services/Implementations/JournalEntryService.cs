@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MiniLedger.Api.Common.Responses;
 using MiniLedger.Api.Data;
 using MiniLedger.Api.DTOs.JournalEntries;
 using MiniLedger.Api.Models;
@@ -109,34 +110,62 @@ public class JournalEntryService : IJournalEntryService
         };
     }
 
-    public async Task<List<JournalEntryDto>> GetAllAsync()
+    public async Task<PagedResponse<List<JournalEntryListItemDto>>> GetAllAsync(JournalEntryQueryDto query)
     {
-        var entries = await _context.JournalEntries
+        var entriesQuery = _context.JournalEntries
             .AsNoTracking()
             .Include(x => x.Lines)
-                .ThenInclude(x => x.Account)
-            .Include(x => x.Lines)
-                .ThenInclude(x => x.Party)
-            .OrderByDescending(x => x.Date)
-            .ToListAsync();
+            .AsQueryable();
 
-        return entries.Select(entry => new JournalEntryDto
+        if (!string.IsNullOrWhiteSpace(query.EntryNumber))
         {
-            Id = entry.Id,
-            EntryNumber = entry.EntryNumber,
-            Date = entry.Date,
-            Description = entry.Description,
-            Lines = entry.Lines.Select(x => new JournalEntryLineDto
+            entriesQuery = entriesQuery.Where(x => x.EntryNumber.Contains(query.EntryNumber));
+        }
+
+        if (query.FromDate.HasValue)
+        {
+            entriesQuery = entriesQuery.Where(x => x.Date >= query.FromDate.Value);
+        }
+
+        if (query.ToDate.HasValue)
+        {
+            entriesQuery = entriesQuery.Where(x => x.Date <= query.ToDate.Value);
+        }
+
+        entriesQuery = query.SortBy?.ToLower() switch
+        {
+            "date" => entriesQuery.OrderBy(x => x.Date),
+            "date_desc" => entriesQuery.OrderByDescending(x => x.Date),
+            "entrynumber" => entriesQuery.OrderBy(x => x.EntryNumber),
+            "entrynumber_desc" => entriesQuery.OrderByDescending(x => x.EntryNumber),
+            _ => entriesQuery.OrderByDescending(x => x.Date)
+        };
+
+        var totalCount = await entriesQuery.CountAsync();
+
+        var items = await entriesQuery
+            .Skip((query.PageNumber - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .Select(x => new JournalEntryListItemDto
             {
                 Id = x.Id,
-                AccountId = x.AccountId,
-                AccountName = x.Account.Name,
-                PartyId = x.PartyId,
-                PartyName = x.Party != null ? x.Party.Name : null,
-                Debit = x.Debit,
-                Credit = x.Credit,
-                Description = x.Description
-            }).ToList()
-        }).ToList();
+                EntryNumber = x.EntryNumber,
+                Date = x.Date,
+                Description = x.Description,
+                TotalDebit = x.Lines.Sum(l => l.Debit),
+                TotalCredit = x.Lines.Sum(l => l.Credit),
+                LinesCount = x.Lines.Count
+            })
+            .ToListAsync();
+
+        return new PagedResponse<List<JournalEntryListItemDto>>
+        {
+            Success = true,
+            Message = "Journal entries retrieved successfully.",
+            Data = items,
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize,
+            TotalCount = totalCount
+        };
     }
 }
