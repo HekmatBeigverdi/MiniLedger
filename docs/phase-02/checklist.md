@@ -1,12 +1,17 @@
 # Phase 2 Checklist
 
-- [ ] Phase 2 branch created
-- [ ] Phase 2 docs added
-- [ ] ApiResponse added
-- [ ] PagedResponse added
-- [ ] Account filtering added
-- [ ] Party filtering added
-- [ ] Journal entry querying improved
-- [ ] Pagination added
-- [ ] Swagger updated
-- [ ] Phase 2 release prepared
+- [x] ApiResponse added
+- [x] PagedResponse added
+- [x] AccountQueryDto added
+- [x] PartyQueryDto added
+- [x] JournalEntryQueryDto added
+- [x] JournalEntryListItemDto added
+- [x] account filtering implemented
+- [x] party filtering implemented
+- [x] journal entry list improved
+- [x] sorting implemented
+- [x] pagination implemented
+- [x] build successful
+- [x] API runs
+- [x] Swagger works
+- [x] Phase 2 docs completed

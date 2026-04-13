@@ -1,23 +1,34 @@
 # Phase 2 Roadmap
 
+## Overview
+
+Phase 2 focuses on improving business querying and API response consistency.
+
+---
+
 ## Day 1
-- Create Phase 2 branch
-- Add documentation
-- Add common response models
+- add common response models
+- add ApiResponse
+- add PagedResponse
 
 ## Day 2
-- Add query models for Accounts and Parties
-- Implement filtering and search
+- add AccountQueryDto
+- implement filtering, sorting, and pagination for accounts
 
 ## Day 3
-- Add sorting and pagination
-- Improve Journal Entry listing
+- add PartyQueryDto
+- implement filtering, sorting, and pagination for parties
 
 ## Day 4
-- Strengthen business rules for journal entries
-- Standardize API responses
+- add JournalEntryQueryDto
+- add JournalEntryListItemDto
+- improve journal entry list endpoint
 
 ## Day 5
-- Cleanup
-- Swagger updates
-- Prepare for Phase 2 release
+- validate all query endpoints
+- verify build and run
+- finalize code
+
+## Day 6
+- complete GitHub documentation
+- prepare for Phase 2 release

@@ -1,9 +1,14 @@
-# Day 1 - Phase 2 Setup
+# Day 1 - Common Response Models
 
-## Goals
-- Create the Phase 2 branch
-- Add documentation files
-- Prepare common response models
+## Goal
 
-## Result
-The repository is ready for implementing Phase 2 features.
+Introduce reusable response models for API consistency.
+
+## Implemented
+
+- ApiResponse<T>
+- PagedResponse<T>
+
+## Why It Matters
+
+These models make the API easier to consume and prepare the project for filtering and pagination.
