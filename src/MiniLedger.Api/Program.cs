@@ -58,6 +58,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<MiniLedgerDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
 
