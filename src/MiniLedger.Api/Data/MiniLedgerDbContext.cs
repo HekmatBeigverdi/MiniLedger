@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MiniLedger.Api.Models;
 
 namespace MiniLedger.Api.Data;
 
-public class MiniLedgerDbContext : DbContext
+public class MiniLedgerDbContext : IdentityDbContext<AppUser>
 {
     public MiniLedgerDbContext(DbContextOptions<MiniLedgerDbContext> options) : base(options)
     {
@@ -13,10 +14,11 @@ public class MiniLedgerDbContext : DbContext
     public DbSet<Party> Parties => Set<Party>();
     public DbSet<JournalEntry> JournalEntries => Set<JournalEntry>();
     public DbSet<JournalEntryLine> JournalEntryLines => Set<JournalEntryLine>();
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Account>(entity =>
         {
             entity.Property(x => x.Code).HasMaxLength(20).IsRequired();
