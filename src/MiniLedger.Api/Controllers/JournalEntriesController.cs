@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiniLedger.Api.Common.Responses;
 using MiniLedger.Api.DTOs.JournalEntries;
@@ -32,7 +33,8 @@ public class JournalEntriesController : ControllerBase
 
         return Ok(result);
     }
-
+    
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> Create(JournalEntryCreateDto dto)
     {
