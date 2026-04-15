@@ -8,6 +8,8 @@ using MiniLedger.Api.Middleware;
 using MiniLedger.Api.Services.Implementations;
 using MiniLedger.Api.Services.Interfaces;
 using MiniLedger.Api.Features.Accounts.Commands.CreateAccount;
+using MiniLedger.Api.Repositories.Implementations;
+using MiniLedger.Api.Repositories.Interfaces;
 using MiniLedger.Domain.Entities;
 using MiniLedger.Application.Interfaces;
 using MiniLedger.Infrastructure.Data;
@@ -48,6 +50,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // Keep Party and JournalEntry in the old service-based style for now
 builder.Services.AddScoped<IPartyService, PartyService>();
+builder.Services.AddScoped<IPartyRepository, PartyRepository>();
 builder.Services.AddScoped<IJournalEntryService, JournalEntryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

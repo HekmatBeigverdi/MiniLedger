@@ -3,12 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MiniLedger.Domain.Entities;
 using MiniLedger.Infrastructure.Data;
 
 #nullable disable
 
-namespace MiniLedger.Api.Migrations
+namespace MiniLedger.Infrastructure.Migrations
 {
     [DbContext(typeof(MiniLedgerDbContext))]
     partial class MiniLedgerDbContextModelSnapshot : ModelSnapshot
@@ -148,7 +147,7 @@ namespace MiniLedger.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.Account", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,7 +177,7 @@ namespace MiniLedger.Api.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.AppUser", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -246,7 +245,7 @@ namespace MiniLedger.Api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.JournalEntry", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.JournalEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -272,7 +271,7 @@ namespace MiniLedger.Api.Migrations
                     b.ToTable("JournalEntries");
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.JournalEntryLine", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.JournalEntryLine", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -308,7 +307,7 @@ namespace MiniLedger.Api.Migrations
                     b.ToTable("JournalEntryLines");
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.Party", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.Party", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -342,7 +341,7 @@ namespace MiniLedger.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MiniLedger.Api.Models.AppUser", null)
+                    b.HasOne("MiniLedger.Domain.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -351,7 +350,7 @@ namespace MiniLedger.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MiniLedger.Api.Models.AppUser", null)
+                    b.HasOne("MiniLedger.Domain.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -366,7 +365,7 @@ namespace MiniLedger.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MiniLedger.Api.Models.AppUser", null)
+                    b.HasOne("MiniLedger.Domain.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -375,28 +374,28 @@ namespace MiniLedger.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MiniLedger.Api.Models.AppUser", null)
+                    b.HasOne("MiniLedger.Domain.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.JournalEntryLine", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.JournalEntryLine", b =>
                 {
-                    b.HasOne("MiniLedger.Api.Models.Account", "Account")
+                    b.HasOne("MiniLedger.Domain.Entities.Account", "Account")
                         .WithMany("JournalEntryLines")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MiniLedger.Api.Models.JournalEntry", "JournalEntry")
+                    b.HasOne("MiniLedger.Domain.Entities.JournalEntry", "JournalEntry")
                         .WithMany("Lines")
                         .HasForeignKey("JournalEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MiniLedger.Api.Models.Party", "Party")
+                    b.HasOne("MiniLedger.Domain.Entities.Party", "Party")
                         .WithMany("JournalEntryLines")
                         .HasForeignKey("PartyId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -408,17 +407,17 @@ namespace MiniLedger.Api.Migrations
                     b.Navigation("Party");
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.Account", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.Account", b =>
                 {
                     b.Navigation("JournalEntryLines");
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.JournalEntry", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.JournalEntry", b =>
                 {
                     b.Navigation("Lines");
                 });
 
-            modelBuilder.Entity("MiniLedger.Api.Models.Party", b =>
+            modelBuilder.Entity("MiniLedger.Domain.Entities.Party", b =>
                 {
                     b.Navigation("JournalEntryLines");
                 });
