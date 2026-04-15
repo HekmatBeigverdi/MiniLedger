@@ -1,4 +1,4 @@
-namespace MiniLedger.Api.Models;
+namespace MiniLedger.Domain.Entities;
 
 public class JournalEntryLine
 {

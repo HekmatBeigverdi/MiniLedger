@@ -1,6 +1,6 @@
-using MiniLedger.Api.Common.Enums;
+using MiniLedger.Domain.Enums;
 
-namespace MiniLedger.Api.Models;
+namespace MiniLedger.Domain.Entities;
 
 public class Party
 {

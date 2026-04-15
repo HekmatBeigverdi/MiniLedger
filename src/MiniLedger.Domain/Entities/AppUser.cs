@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace MiniLedger.Api.Models;
+namespace MiniLedger.Domain.Entities;
 
 public class AppUser : IdentityUser
 {

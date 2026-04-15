@@ -1,4 +1,4 @@
-namespace MiniLedger.Api.Common.Enums;
+namespace MiniLedger.Domain.Enums;
 
 public enum PartyType
 {
