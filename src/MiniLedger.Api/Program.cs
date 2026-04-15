@@ -11,6 +11,7 @@ using MiniLedger.Api.Repositories.Interfaces;
 using MiniLedger.Api.Services.Implementations;
 using MiniLedger.Api.Services.Interfaces;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -81,6 +82,8 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateAccountCommand).Assembly));
 
 var app = builder.Build();
 
