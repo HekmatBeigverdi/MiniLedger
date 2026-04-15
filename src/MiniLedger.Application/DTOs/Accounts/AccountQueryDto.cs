@@ -1,4 +1,4 @@
-namespace MiniLedger.Api.DTOs.Accounts;
+namespace MiniLedger.Application.DTOs.Accounts;
 
 public class AccountQueryDto
 {
