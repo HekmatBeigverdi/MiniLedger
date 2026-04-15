@@ -3,7 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MiniLedger.Api.Data;
+using MiniLedger.Domain.Entities;
+using MiniLedger.Infrastructure.Data;
 
 #nullable disable
 

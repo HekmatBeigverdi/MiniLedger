@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MiniLedger.Api.DTOs.Auth;
-using MiniLedger.Api.Models;
+using MiniLedger.Domain.Entities;
 using MiniLedger.Api.Services.Interfaces;
 
 namespace MiniLedger.Api.Services.Implementations;
