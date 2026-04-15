@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MiniLedger.Api.Models;
 
-namespace MiniLedger.Api.Data;
+namespace MiniLedger.Infrastructure.Data;
 
 public class MiniLedgerDbContext : IdentityDbContext<AppUser>
 {
