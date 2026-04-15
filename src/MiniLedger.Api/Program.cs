@@ -1,22 +1,26 @@
 using System.Text;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MiniLedger.Api.Data;
 using MiniLedger.Api.Middleware;
-using MiniLedger.Api.Models;
-using MiniLedger.Api.Repositories.Implementations;
-using MiniLedger.Api.Repositories.Interfaces;
 using MiniLedger.Api.Services.Implementations;
 using MiniLedger.Api.Services.Interfaces;
-
+using MiniLedger.Api.Features.Accounts.Commands.CreateAccount;
+using MiniLedger.Domain.Entities;
+using MiniLedger.Application.Interfaces;
+using MiniLedger.Infrastructure.Data;
+using MiniLedger.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(CreateAccountCommand).Assembly));
 
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection")
@@ -41,12 +45,11 @@ builder.Services.AddDbContext<MiniLedgerDbContext>(options =>
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 
-builder.Services.AddScoped<IPartyRepository, PartyRepository>();
+// Keep Party and JournalEntry in the old service-based style for now
 builder.Services.AddScoped<IPartyService, PartyService>();
-
 builder.Services.AddScoped<IJournalEntryService, JournalEntryService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     {
@@ -58,8 +61,6 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     })
     .AddEntityFrameworkStores<MiniLedgerDbContext>()
     .AddDefaultTokenProviders();
-
-builder.Services.AddScoped<IAuthService, AuthService>();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"] ?? throw new InvalidOperationException("JWT Key is not configured.");
@@ -82,8 +83,6 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateAccountCommand).Assembly));
 
 var app = builder.Build();
 
