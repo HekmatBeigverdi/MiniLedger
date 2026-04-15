@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MiniLedger.Api.Models;
+using MiniLedger.Domain.Entities;
 
 namespace MiniLedger.Infrastructure.Data;
 
