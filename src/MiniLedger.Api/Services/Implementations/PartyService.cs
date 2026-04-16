@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using MiniLedger.Api.Common.Enums;
+using MiniLedger.Domain.Enums;
 using MiniLedger.Api.Common.Responses;
-using MiniLedger.Api.Data;
+using MiniLedger.Infrastructure.Data;
 using MiniLedger.Api.DTOs.Parties;
-using MiniLedger.Api.Models;
+using MiniLedger.Domain.Entities;
 using MiniLedger.Api.Repositories.Interfaces;
 using MiniLedger.Api.Services.Interfaces;
 

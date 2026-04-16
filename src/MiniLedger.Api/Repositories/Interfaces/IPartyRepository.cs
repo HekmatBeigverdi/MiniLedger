@@ -1,4 +1,5 @@
-using MiniLedger.Api.Models;
+using MiniLedger.Domain.Entities;
+
 
 namespace MiniLedger.Api.Repositories.Interfaces;
 

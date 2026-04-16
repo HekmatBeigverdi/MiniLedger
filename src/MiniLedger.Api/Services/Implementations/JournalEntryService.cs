@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MiniLedger.Api.Common.Responses;
-using MiniLedger.Api.Data;
+using MiniLedger.Domain.Entities;
 using MiniLedger.Api.DTOs.JournalEntries;
-using MiniLedger.Api.Models;
+using MiniLedger.Infrastructure.Data;
 using MiniLedger.Api.Services.Interfaces;
 
 namespace MiniLedger.Api.Services.Implementations;

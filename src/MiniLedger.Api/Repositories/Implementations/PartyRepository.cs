@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MiniLedger.Api.Data;
-using MiniLedger.Api.Models;
+using MiniLedger.Domain.Entities;
+using MiniLedger.Infrastructure.Data;
 using MiniLedger.Api.Repositories.Interfaces;
 
 namespace MiniLedger.Api.Repositories.Implementations;
