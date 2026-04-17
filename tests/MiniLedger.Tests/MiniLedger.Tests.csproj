@@ -36,7 +36,6 @@
     <Folder Include="Integration\Accounts\" />
     <Folder Include="Integration\Auth\" />
     <Folder Include="Integration\JournalEntries\" />
-    <Folder Include="Unit\Accounts\" />
     <Folder Include="Unit\Auth\" />
     <Folder Include="Unit\JournalEntries\" />
   </ItemGroup>
