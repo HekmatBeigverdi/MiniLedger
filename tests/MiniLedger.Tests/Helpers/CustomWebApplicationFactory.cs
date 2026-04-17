@@ -1,8 +1,8 @@
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using MiniLedger.Infrastructure.Data;
 
 namespace MiniLedger.Tests.Helpers;
@@ -15,23 +15,24 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            var dbContextDescriptor = services.SingleOrDefault(
+            var descriptor = services.SingleOrDefault(
                 d => d.ServiceType == typeof(DbContextOptions<MiniLedgerDbContext>));
 
-            if (dbContextDescriptor != null)
+            if (descriptor != null)
             {
-                services.Remove(dbContextDescriptor);
+                services.Remove(descriptor);
             }
 
             services.AddDbContext<MiniLedgerDbContext>(options =>
             {
-                options.UseInMemoryDatabase("MiniLedgerTestDb");
+                options.UseInMemoryDatabase("TestDb");
             });
 
-            var serviceProvider = services.BuildServiceProvider();
+            var sp = services.BuildServiceProvider();
 
-            using var scope = serviceProvider.CreateScope();
+            using var scope = sp.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<MiniLedgerDbContext>();
+
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
         });
