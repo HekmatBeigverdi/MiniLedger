@@ -1,8 +1,10 @@
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Moq;
 using MiniLedger.Api.Features.Accounts.Commands.CreateAccount;
+using MiniLedger.Api.Services.Interfaces;
 using MiniLedger.Domain.Entities;
 using MiniLedger.Domain.Enums;
-using MiniLedger.Infrastructure.Data;
 using MiniLedger.Tests.Helpers;
 
 namespace MiniLedger.Tests.Unit.Accounts;
@@ -14,7 +16,12 @@ public class CreateAccountCommandHandlerTests
     {
         // Arrange
         var context = TestDbContextFactory.Create();
-        var handler = new CreateAccountCommandHandler(context);
+
+        var cacheServiceMock = new Mock<ICacheService>();
+
+        var handler = new CreateAccountCommandHandler(
+            context,
+            cacheServiceMock.Object);
 
         var command = new CreateAccountCommand
         {
@@ -52,7 +59,11 @@ public class CreateAccountCommandHandlerTests
 
         await context.SaveChangesAsync();
 
-        var handler = new CreateAccountCommandHandler(context);
+        var cacheServiceMock = new Mock<ICacheService>();
+
+        var handler = new CreateAccountCommandHandler(
+            context,
+            cacheServiceMock.Object);
 
         var command = new CreateAccountCommand
         {

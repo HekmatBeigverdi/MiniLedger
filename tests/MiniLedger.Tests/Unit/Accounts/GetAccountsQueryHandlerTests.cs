@@ -1,5 +1,10 @@
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using MiniLedger.Api.Common.Responses;
 using MiniLedger.Api.Features.Accounts.Queries.GetAccounts;
+using MiniLedger.Api.Services.Interfaces;
+using MiniLedger.Application.DTOs.Accounts;
 using MiniLedger.Domain.Entities;
 using MiniLedger.Domain.Enums;
 using MiniLedger.Tests.Helpers;
@@ -21,7 +26,23 @@ public class GetAccountsQueryHandlerTests
 
         await context.SaveChangesAsync();
 
-        var handler = new GetAccountsQueryHandler(context);
+        var configurationMock = new Mock<IConfiguration>();
+        configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value).Returns((string?)null);
+
+        var cacheServiceMock = new Mock<ICacheService>();
+        cacheServiceMock
+            .Setup(x => x.GetOrCreateAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<PagedResponse<List<AccountDto>>>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<PagedResponse<List<AccountDto>>>>, TimeSpan>(
+                async (_, factory, _) => await factory());
+
+        var handler = new GetAccountsQueryHandler(
+            context,
+            cacheServiceMock.Object,
+            configurationMock.Object);
+
         var query = new GetAccountsQuery();
 
         // Act
@@ -45,7 +66,23 @@ public class GetAccountsQueryHandlerTests
 
         await context.SaveChangesAsync();
 
-        var handler = new GetAccountsQueryHandler(context);
+        var configurationMock = new Mock<IConfiguration>();
+        configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value).Returns((string?)null);
+
+        var cacheServiceMock = new Mock<ICacheService>();
+        cacheServiceMock
+            .Setup(x => x.GetOrCreateAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<PagedResponse<List<AccountDto>>>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<PagedResponse<List<AccountDto>>>>, TimeSpan>(
+                async (_, factory, _) => await factory());
+
+        var handler = new GetAccountsQueryHandler(
+            context,
+            cacheServiceMock.Object,
+            configurationMock.Object);
+
         var query = new GetAccountsQuery { Search = "Cash" };
 
         // Act
@@ -75,7 +112,23 @@ public class GetAccountsQueryHandlerTests
 
         await context.SaveChangesAsync();
 
-        var handler = new GetAccountsQueryHandler(context);
+        var configurationMock = new Mock<IConfiguration>();
+        configurationMock.Setup(x => x.GetSection(It.IsAny<string>()).Value).Returns((string?)null);
+
+        var cacheServiceMock = new Mock<ICacheService>();
+        cacheServiceMock
+            .Setup(x => x.GetOrCreateAsync(
+                It.IsAny<string>(),
+                It.IsAny<Func<Task<PagedResponse<List<AccountDto>>>>>(),
+                It.IsAny<TimeSpan>()))
+            .Returns<string, Func<Task<PagedResponse<List<AccountDto>>>>, TimeSpan>(
+                async (_, factory, _) => await factory());
+
+        var handler = new GetAccountsQueryHandler(
+            context,
+            cacheServiceMock.Object,
+            configurationMock.Object);
+
         var query = new GetAccountsQuery
         {
             PageNumber = 2,
