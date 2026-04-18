@@ -1,7 +1,10 @@
+using System.IO.Compression;
 using System.Text;
+using System.Threading.RateLimiting;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MiniLedger.Api.Middleware;
@@ -18,6 +21,7 @@ using MiniLedger.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -53,6 +57,7 @@ builder.Services.AddScoped<IPartyService, PartyService>();
 builder.Services.AddScoped<IPartyRepository, PartyRepository>();
 builder.Services.AddScoped<IJournalEntryService, JournalEntryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     {
@@ -87,6 +92,48 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+//************** Response Compression ****************//
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Fastest;
+});    
+//************** Response Compression ****************//
+//************** Health Check  ****************//
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<MiniLedgerDbContext>("database");
+
+//************** Health Check  ****************//
+//************** Rate Limiter  ****************//
+
+builder.Services.AddRateLimiter(options =>
+{
+    var permitLimit = builder.Configuration.GetValue<int>("RateLimiting:PermitLimit", 20);
+    var windowSeconds = builder.Configuration.GetValue<int>("RateLimiting:WindowSeconds", 10);
+    var queueLimit = builder.Configuration.GetValue<int>("RateLimiting:QueueLimit", 0);
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = permitLimit,
+                Window = TimeSpan.FromSeconds(windowSeconds),
+                QueueLimit = queueLimit,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+//************** Rate Limiter  ****************//
+
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -98,12 +145,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseResponseCompression();
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();
 

@@ -7,11 +7,16 @@ public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+    private readonly IHostEnvironment _environment;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger,
+        IHostEnvironment environment)
     {
         _next = next;
         _logger = logger;
+        _environment = environment;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -22,7 +27,9 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception occurred.");
+            _logger.LogError(ex, "Unhandled exception occurred while processing request {Method} {Path}",
+                context.Request.Method,
+                context.Request.Path);
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -30,7 +37,7 @@ public class ExceptionHandlingMiddleware
             var response = new
             {
                 Success = false,
-                Message = ex.Message
+                Message = _environment.IsDevelopment() ? ex.Message : "An unexpected error occurred."
             };
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));

@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MiniLedger.Api.Services.Interfaces;
 using MiniLedger.Domain.Entities;
 using MiniLedger.Domain.Enums;
 using MiniLedger.Infrastructure.Data;
@@ -10,9 +11,12 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
 {
     private readonly MiniLedgerDbContext _context;
 
-    public CreateAccountCommandHandler(MiniLedgerDbContext context)
+    private readonly ICacheService _cacheService;
+
+    public CreateAccountCommandHandler(MiniLedgerDbContext context, ICacheService cacheService)
     {
         _context = context;
+        _cacheService = cacheService;
     }
 
     public async Task<int> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -31,6 +35,8 @@ public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand,
 
         _context.Accounts.Add(account);
         await _context.SaveChangesAsync(cancellationToken);
+        
+        _cacheService.Remove("accounts:");
 
         return account.Id;
     }
