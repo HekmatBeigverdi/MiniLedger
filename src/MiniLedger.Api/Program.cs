@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using System.Threading.RateLimiting;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -102,13 +103,35 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     options.Level = CompressionLevel.Fastest;
 });    
 //************** Response Compression ****************//
-
 //************** Health Check  ****************//
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<MiniLedgerDbContext>("database");
 
 //************** Health Check  ****************//
+//************** Rate Limiter  ****************//
+
+builder.Services.AddRateLimiter(options =>
+{
+    var permitLimit = builder.Configuration.GetValue<int>("RateLimiting:PermitLimit", 20);
+    var windowSeconds = builder.Configuration.GetValue<int>("RateLimiting:WindowSeconds", 10);
+    var queueLimit = builder.Configuration.GetValue<int>("RateLimiting:QueueLimit", 0);
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = permitLimit,
+                Window = TimeSpan.FromSeconds(windowSeconds),
+                QueueLimit = queueLimit,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+//************** Rate Limiter  ****************//
 
 
 var app = builder.Build();
@@ -124,6 +147,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseResponseCompression();
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
