@@ -103,6 +103,14 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });    
 //************** Response Compression ****************//
 
+//************** Health Check  ****************//
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<MiniLedgerDbContext>("database");
+
+//************** Health Check  ****************//
+
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -121,6 +129,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();
 
